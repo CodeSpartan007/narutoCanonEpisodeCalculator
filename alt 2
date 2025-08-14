@@ -1,0 +1,84 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class CanonEpisodeCalculator {
+    
+    private static final List<int[]> fillerRanges = new ArrayList<>();
+    
+    static {
+        // Initialize the filler episode ranges
+        fillerRanges.add(new int[]{57, 71});
+        fillerRanges.add(new int[]{91, 112});
+        fillerRanges.add(new int[]{144, 151});
+        fillerRanges.add(new int[]{170, 171});
+        fillerRanges.add(new int[]{176, 196});
+        fillerRanges.add(new int[]{223, 242});
+        fillerRanges.add(new int[]{257, 260});
+        fillerRanges.add(new int[]{271, 271}); // Single episode
+        fillerRanges.add(new int[]{279, 281});
+        fillerRanges.add(new int[]{284, 295});
+        fillerRanges.add(new int[]{303, 320});
+        fillerRanges.add(new int[]{347, 361});
+        fillerRanges.add(new int[]{376, 377});
+        fillerRanges.add(new int[]{388, 390});
+        fillerRanges.add(new int[]{394, 413});
+        fillerRanges.add(new int[]{416, 417});
+        fillerRanges.add(new int[]{422, 423});
+        fillerRanges.add(new int[]{427, 450});
+        fillerRanges.add(new int[]{464, 468});
+        fillerRanges.add(new int[]{480, 483});
+    }
+    
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Canon Episode Calculator");
+        System.out.println("Enter the episode number you've watched up to (1-500):");
+        
+        int watchedEpisode = scanner.nextInt();
+        
+        if (watchedEpisode < 1 || watchedEpisode > 500) {
+            System.out.println("Invalid episode number. Please enter a number between 1 and 500.");
+            return;
+        }
+        
+        int totalEpisodes = 500;
+        int totalFillerEpisodes = calculateTotalFillerEpisodes();
+        int totalCanonEpisodes = totalEpisodes - totalFillerEpisodes;
+        
+        int watchedFillerEpisodes = calculateWatchedFillerEpisodes(watchedEpisode);
+        int watchedCanonEpisodes = watchedEpisode - watchedFillerEpisodes;
+        
+        double percentage = (double) watchedCanonEpisodes / totalCanonEpisodes * 100;
+        
+        System.out.println("\nResults:");
+        System.out.println("Total episodes: " + totalEpisodes);
+        System.out.println("Total filler episodes: " + totalFillerEpisodes);
+        System.out.println("Total canon episodes: " + totalCanonEpisodes);
+        System.out.println("You've watched " + watchedEpisode + " episodes");
+        System.out.println("Of which " + watchedFillerEpisodes + " are filler");
+        System.out.println("And " + watchedCanonEpisodes + " are canon");
+        System.out.printf("Percentage of canon episodes watched: %.2f%%\n", percentage);
+    }
+    
+    private static int calculateTotalFillerEpisodes() {
+        int count = 0;
+        for (int[] range : fillerRanges) {
+            count += range[1] - range[0] + 1;
+        }
+        return count;
+    }
+    
+    private static int calculateWatchedFillerEpisodes(int watchedEpisode) {
+        int count = 0;
+        for (int[] range : fillerRanges) {
+            if (range[0] > watchedEpisode) {
+                continue; // This filler range is beyond watched episode
+            }
+            int end = Math.min(range[1], watchedEpisode);
+            count += end - range[0] + 1;
+        }
+        return count;
+    }
+}
