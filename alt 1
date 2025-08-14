@@ -1,0 +1,40 @@
+import java.util.Scanner;
+
+public class CanonEpisodeTracker {
+
+    // List of filler episode ranges
+    static int[][] fillerRanges = {
+        {57, 71}, {91, 112}, {144, 151}, {170, 171}, {176, 196}, {223, 242},
+        {257, 260}, {271, 271}, {279, 281}, {284, 295}, {303, 320}, {347, 361},
+        {376, 377}, {388, 390}, {394, 413}, {416, 417}, {422, 423}, {427, 450},
+        {464, 468}, {480, 483}
+    };
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the episode number you are currently on: ");
+        int currentEpisode = scanner.nextInt();
+        
+        int totalEpisodes = 500;
+        int totalCanonEpisodes = totalEpisodes - countFillersUpTo(totalEpisodes);
+        int canonEpisodesWatched = currentEpisode - countFillersUpTo(currentEpisode);
+        
+        double percentage = (canonEpisodesWatched / (double) totalCanonEpisodes) * 100;
+        
+        System.out.printf("You have watched %.2f%% of the canon episodes.%n", percentage);
+    }
+
+    // Count filler episodes up to a given episode number
+    static int countFillersUpTo(int episode) {
+        int count = 0;
+        for (int[] range : fillerRanges) {
+            int start = range[0];
+            int end = range[1];
+            if (episode >= start) {
+                count += Math.min(end, episode) - start + 1;
+                if (episode < end) break;
+            }
+        }
+        return count;
+    }
+}
